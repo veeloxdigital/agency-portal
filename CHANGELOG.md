@@ -1,5 +1,13 @@
 # Veelox Digital changelog
 
+## Version 0.6.2 — Stripe Checkout Compatibility Hotfix
+
+- Explicitly disables Stripe Managed Payments for Veelox invoice Checkout Sessions.
+- Prevents Managed Payments from requiring Stripe product tax codes.
+- Keeps the customer charge equal to the outstanding Veelox invoice balance.
+- Retains Stripe-hosted Checkout, signed webhook confirmation and payment reconciliation.
+- No database migration or Stripe key reconfiguration is required.
+
 ## Version 0.6.1 — Stripe Managed Payments Hotfix
 
 - Removed the unsupported `payment_method_types` Checkout parameter.

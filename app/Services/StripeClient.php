@@ -19,6 +19,7 @@ final class StripeClient
         if(!str_starts_with($appUrl,'https://')) throw new RuntimeException('APP_URL must use HTTPS for Stripe Checkout.');
         $payload=[
             'mode'=>'payment',
+            'managed_payments'=>['enabled'=>'false'],
             'success_url'=>$appUrl.'/portal/invoices/'.(int)$invoice['id'].'?stripe=success&session_id={CHECKOUT_SESSION_ID}',
             'cancel_url'=>$appUrl.'/portal/invoices/'.(int)$invoice['id'].'?stripe=cancelled',
             'customer_email'=>$invoice['email'],
