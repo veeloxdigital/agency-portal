@@ -1,0 +1,1 @@
+<header class="page-header compact"><div><a class="back-link" href="/invoices">← Invoices</a><div class="eyebrow">New invoice</div><h1>Create an invoice</h1><p>Bill a customer for an order or a custom service.</p></div></header><?php require BASE_PATH.'/app/Views/invoices/_form.php'; ?>

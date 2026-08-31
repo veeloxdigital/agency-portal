@@ -1,0 +1,1 @@
+<header class="page-header compact"><div><a class="back-link" href="/invoices/<?= (int)$invoice['id'] ?>">← Invoice details</a><div class="eyebrow"><?= htmlspecialchars((string)$invoice['invoice_number']) ?></div><h1>Edit invoice</h1><p>Update customer details, dates and line items.</p></div></header><?php require BASE_PATH.'/app/Views/invoices/_form.php'; ?>

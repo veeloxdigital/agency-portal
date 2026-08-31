@@ -1,0 +1,24 @@
+<?php
+
+use App\Core\Csrf;
+
+$displayName = $customer['company_name'] ?: $customer['contact_name'];
+$address = array_filter([$customer['address_line_1'], $customer['address_line_2'], $customer['town_city'], $customer['county'], $customer['postcode']]);
+?>
+<header class="page-header customer-header"><div><a class="back-link" href="/customers">← All customers</a><div class="profile-title"><span class="profile-avatar"><?= htmlspecialchars(strtoupper(substr((string) $displayName, 0, 1))) ?></span><div><div class="eyebrow"><?= htmlspecialchars((string) $customer['account_number']) ?></div><h1><?= htmlspecialchars((string) $displayName) ?></h1><p><?= htmlspecialchars((string) $customer['contact_name']) ?> · <?= htmlspecialchars((string) $customer['email']) ?></p></div></div></div><div class="header-actions"><?php if($customer['status']!=='archived'): ?><a class="primary-button" href="/orders/create?customer=<?= (int)$customer['id'] ?>">Create order</a><?php endif; ?><a class="secondary-button" href="/customers/<?= (int) $customer['id'] ?>/edit">Edit customer</a><span class="status <?= htmlspecialchars((string) $customer['status']) ?>"><?= htmlspecialchars(ucfirst((string) $customer['status'])) ?></span></div></header>
+
+<?php if ($flash): ?><div class="alert <?= htmlspecialchars($flash['type']) ?>"><?= htmlspecialchars($flash['message']) ?></div><?php endif; ?>
+<?php if ($temporaryPassword): ?><div class="credential-box"><div><strong>Temporary customer password</strong><p>This is shown once. Copy it and send it to the customer securely.</p></div><code><?= htmlspecialchars($temporaryPassword) ?></code></div><?php endif; ?>
+
+<section class="mini-metrics"><article><small>Orders</small><strong><?= number_format($metrics['orders']) ?></strong></article><article><small>Invoices</small><strong><?= number_format($metrics['invoices']) ?></strong></article><article><small>Outstanding</small><strong>£<?= number_format($metrics['outstanding'] / 100, 2) ?></strong></article><article><small>Open tickets</small><strong><?= number_format($metrics['tickets']) ?></strong></article></section>
+
+<div class="profile-grid">
+    <div class="profile-main">
+        <section class="detail-card"><div class="panel-heading"><div><span class="eyebrow">Contact</span><h2>Customer information</h2></div><a href="mailto:<?= htmlspecialchars((string) $customer['email']) ?>">Send email ↗</a></div><dl class="detail-list"><div><dt>Contact name</dt><dd><?= htmlspecialchars((string) $customer['contact_name']) ?></dd></div><div><dt>Email</dt><dd><?= htmlspecialchars((string) $customer['email']) ?></dd></div><div><dt>Telephone</dt><dd><?= htmlspecialchars((string) ($customer['phone'] ?: 'Not provided')) ?></dd></div><div><dt>Customer type</dt><dd><?= htmlspecialchars(ucfirst((string) $customer['type'])) ?></dd></div><div class="wide"><dt>Billing address</dt><dd><?= $address ? implode('<br>', array_map('htmlspecialchars', $address)) : 'Not provided' ?></dd></div></dl></section>
+        <section class="detail-card"><div class="panel-heading"><div><span class="eyebrow">Private</span><h2>Internal notes</h2></div></div><div class="notes-content"><?= $customer['internal_notes'] ? nl2br(htmlspecialchars((string) $customer['internal_notes'])) : '<span class="muted">No internal notes have been added.</span>' ?></div></section>
+    </div>
+    <aside class="profile-side">
+        <section class="detail-card"><div class="panel-heading"><div><span class="eyebrow">Access</span><h2>Customer portal</h2></div></div><?php if ($customer['user_id']): ?><div class="portal-state enabled"><span>✓</span><div><strong>Portal enabled</strong><small><?= $customer['last_login_at'] ? 'Last login ' . htmlspecialchars(date('j M Y, H:i', strtotime((string) $customer['last_login_at']))) : 'Customer has not signed in yet' ?></small></div></div><?php else: ?><p class="card-copy">Create a secure login so this customer can view their own orders, invoices and tickets.</p><form method="post" action="/customers/<?= (int) $customer['id'] ?>/portal-access"><input type="hidden" name="_token" value="<?= htmlspecialchars(Csrf::token()) ?>"><button class="primary-button full" type="submit">Create portal access</button></form><?php endif; ?></section>
+        <section class="detail-card danger-card"><div><span class="eyebrow">Account</span><h2>Archive customer</h2><p class="card-copy">Archiving hides the account from active lists and suspends portal access.</p></div><?php if ($customer['status'] !== 'archived'): ?><form method="post" action="/customers/<?= (int) $customer['id'] ?>/archive" onsubmit="return confirm('Archive this customer account?')"><input type="hidden" name="_token" value="<?= htmlspecialchars(Csrf::token()) ?>"><button class="danger-button" type="submit">Archive customer</button></form><?php endif; ?></section>
+    </aside>
+</div>
