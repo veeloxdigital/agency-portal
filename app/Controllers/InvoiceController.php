@@ -9,6 +9,7 @@ use App\Core\Env;
 use App\Core\Auth;
 use App\Core\View;
 use App\Services\InvoiceService;
+use App\Services\StripeClient;
 use PDO;
 use Throwable;
 
@@ -46,14 +47,14 @@ final class InvoiceController
     {
         $db=Database::connection();$this->markOverdue($db);$invoice=$this->find((int)$id);
         $p=$db->prepare('SELECT * FROM payments WHERE invoice_id=:id ORDER BY created_at DESC');$p->execute(['id'=>$invoice['id']]);
-        View::render('invoices/show',['title'=>$invoice['invoice_number'],'invoice'=>$invoice,'items'=>$this->items((int)$invoice['id']),'payments'=>$p->fetchAll(),'flash'=>$this->pullFlash(),'bank'=>$this->bank(),'canManage'=>true]);
+        View::render('invoices/show',['title'=>$invoice['invoice_number'],'invoice'=>$invoice,'items'=>$this->items((int)$invoice['id']),'payments'=>$p->fetchAll(),'flash'=>$this->pullFlash(),'bank'=>$this->bank(),'canManage'=>true,'stripeEnabled'=>false]);
     }
 
     public function portalIndex(): void
     {
         $db=Database::connection();$this->markOverdue($db);$customerId=$this->portalCustomerId();
         $s=$db->prepare("SELECT invoices.*,customers.account_number,customers.company_name,customers.contact_name,orders.order_number FROM invoices INNER JOIN customers ON customers.id=invoices.customer_id LEFT JOIN orders ON orders.id=invoices.order_id WHERE invoices.customer_id=:customer AND invoices.status NOT IN ('draft','void') ORDER BY invoices.created_at DESC");$s->execute(['customer'=>$customerId]);
-        View::render('invoices/index',['title'=>'My Invoices','invoices'=>$s->fetchAll(),'search'=>'','status'=>'','flash'=>null,'portal'=>true]);
+        View::render('invoices/index',['title'=>'My Invoices','invoices'=>$s->fetchAll(),'search'=>'','status'=>'','flash'=>$this->pullFlash(),'portal'=>true]);
     }
 
     public function portalShow(string $id): void
@@ -61,7 +62,8 @@ final class InvoiceController
         $db=Database::connection();$this->markOverdue($db);$invoice=$this->find((int)$id);
         if((int)$invoice['customer_id']!==$this->portalCustomerId()){http_response_code(404);exit('Invoice not found.');}
         $p=$db->prepare('SELECT * FROM payments WHERE invoice_id=:id ORDER BY created_at DESC');$p->execute(['id'=>$invoice['id']]);
-        View::render('invoices/show',['title'=>$invoice['invoice_number'],'invoice'=>$invoice,'items'=>$this->items((int)$invoice['id']),'payments'=>$p->fetchAll(),'flash'=>null,'bank'=>$this->bank(),'canManage'=>false]);
+        $flash=$this->pullFlash();if(!$flash&&($_GET['stripe']??'')==='success')$flash=['type'=>'success','message'=>'Your payment is being confirmed. This page will update after Stripe sends confirmation.'];if(!$flash&&($_GET['stripe']??'')==='cancelled')$flash=['type'=>'error','message'=>'Card payment was cancelled. No payment was taken.'];
+        View::render('invoices/show',['title'=>$invoice['invoice_number'],'invoice'=>$invoice,'items'=>$this->items((int)$invoice['id']),'payments'=>$p->fetchAll(),'flash'=>$flash,'bank'=>$this->bank(),'canManage'=>false,'stripeEnabled'=>(new StripeClient())->enabled()]);
     }
 
     public function status(string $id): never

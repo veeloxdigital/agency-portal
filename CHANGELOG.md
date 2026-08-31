@@ -1,5 +1,26 @@
 # Veelox Digital changelog
 
+## Version 0.6.1 — Stripe Managed Payments Hotfix
+
+- Removed the unsupported `payment_method_types` Checkout parameter.
+- Added compatibility with Stripe accounts where Managed Payments is enabled by default.
+- Stripe now selects the available payment methods using the account's Managed Payments configuration.
+- No database migration is required.
+
+## Version 0.6.0 — Stripe Card Payments
+
+- Added Stripe-hosted Checkout for outstanding customer invoices.
+- Added a customer portal card-payment button that appears only when Stripe is configured.
+- Added a browser-based Stripe configuration screen for DirectAdmin installations without SSH.
+- Added a signed webhook endpoint with five-minute timestamp tolerance.
+- Added webhook event deduplication to prevent repeated Stripe events from recording payment twice.
+- Added pending, successful, failed and expired Stripe payment tracking.
+- Added automatic invoice reconciliation after verified payment confirmation.
+- Added automatic linked-order payment status updates.
+- Added Checkout success and cancellation messages without trusting browser redirects as payment proof.
+- Preserved manual bank-transfer payment support alongside Stripe.
+- Added test-mode and live-mode key validation.
+
 ## Version 0.5.0 — Invoices & Bank Transfers
 
 - Fixed Active Orders so pending, awaiting-payment, paid and active orders are counted.

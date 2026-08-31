@@ -8,9 +8,11 @@ use App\Controllers\DashboardController;
 use App\Controllers\PackageController;
 use App\Controllers\OrderController;
 use App\Controllers\InvoiceController;
+use App\Controllers\StripeController;
 
 return [
     ['GET', '/', [DashboardController::class, 'index'], ['auth']],
+    ['POST', '/stripe/webhook', [StripeController::class, 'webhook'], []],
     ['GET', '/login', [AuthController::class, 'showLogin'], ['guest']],
     ['POST', '/login', [AuthController::class, 'login'], ['guest', 'csrf']],
     ['POST', '/logout', [AuthController::class, 'logout'], ['auth', 'csrf']],
@@ -47,4 +49,5 @@ return [
     ['POST', '/invoices/{id}/payments', [InvoiceController::class, 'payment'], ['auth', 'role:admin,staff', 'csrf']],
     ['GET', '/portal/invoices', [InvoiceController::class, 'portalIndex'], ['auth', 'role:customer']],
     ['GET', '/portal/invoices/{id}', [InvoiceController::class, 'portalShow'], ['auth', 'role:customer']],
+    ['POST', '/portal/invoices/{id}/stripe-checkout', [StripeController::class, 'checkout'], ['auth', 'role:customer', 'csrf']],
 ];

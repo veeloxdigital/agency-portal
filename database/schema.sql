@@ -226,6 +226,13 @@ CREATE TABLE activity_logs (
     INDEX idx_activity_entity (entity_type, entity_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE stripe_webhook_events (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    stripe_event_id VARCHAR(190) NOT NULL UNIQUE,
+    event_type VARCHAR(120) NOT NULL,
+    processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE migrations (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     migration VARCHAR(190) NOT NULL UNIQUE,
@@ -234,7 +241,7 @@ CREATE TABLE migrations (
 
 INSERT INTO roles (name, slug) VALUES ('Administrator', 'admin'), ('Staff', 'staff'), ('Customer', 'customer');
 INSERT INTO ticket_departments (name, email) VALUES ('General Support', NULL), ('Billing', NULL), ('Web Projects', NULL);
-INSERT INTO migrations (migration) VALUES ('003_packages.sql'), ('004_orders.sql'), ('005_invoices.sql');
+INSERT INTO migrations (migration) VALUES ('003_packages.sql'), ('004_orders.sql'), ('005_invoices.sql'), ('006_stripe.sql');
 
 INSERT INTO settings (setting_key, setting_value, is_secret) VALUES
 ('invoice_prefix', 'INV', 0), ('invoice_due_days', '14', 0);

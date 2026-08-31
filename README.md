@@ -1,6 +1,6 @@
 # Veelox Digital Agency Portal
 
-Current version: **0.5.0**
+Current version: **0.6.1**
 
 The initial foundation for a lightweight customer, order, billing and support platform designed for DirectAdmin hosting with PHP 8.2+ and MySQL/MariaDB.
 
@@ -17,16 +17,18 @@ The initial foundation for a lightweight customer, order, billing and support pl
 - Complete plans and packages management with one-off, monthly and yearly billing, setup fees, feature lists, visibility controls, duplication, archiving and performance totals
 - Complete customer order management with package assignment, custom pricing, recurring dates, staff assignment and workflow statuses
 - Complete invoicing with line items, printable customer invoices, outstanding balances and manual bank-transfer payment recording
+- Stripe Checkout card payments with signed webhooks, idempotent reconciliation and customer payment buttons
 
-## Upgrading an existing 0.4.0 installation
+## Upgrading an existing 0.6.0 installation
 
 1. Back up the existing files and database.
-2. Download and extract the 0.5.0 package locally.
+2. Download and extract the 0.6.1 package locally.
 3. Upload the contents over the existing project and allow DirectAdmin to replace matching application files.
 4. Keep your existing `.env` file and `storage/installed.lock` file.
 5. Do not run `install.php` again and do not re-import `database/schema.sql`.
 6. Sign in as an administrator and visit `https://your-portal-domain.example/update.php`.
-7. Press **Run database update**, then open **Invoices** from the sidebar.
+7. No database update is required for this hotfix.
+8. Retry the customer Stripe Checkout button.
 
 ## DirectAdmin installation — no SSH required
 
