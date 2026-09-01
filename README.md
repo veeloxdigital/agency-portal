@@ -1,6 +1,6 @@
 # Veelox Digital Agency Portal
 
-Current version: **1.0.2**
+Current version: **1.0.3**
 
 The initial foundation for a lightweight customer, order, billing and support platform designed for DirectAdmin hosting with PHP 8.2+ and MySQL/MariaDB.
 
@@ -23,10 +23,10 @@ The initial foundation for a lightweight customer, order, billing and support pl
 - Revenue reporting with date filters, payment and billing breakdowns, package performance, overdue balances, renewals and CSV exports
 - Production administration with agency branding, staff access, support departments, audit history, backups, health checks and security hardening
 
-## Upgrading an existing 1.0.1 installation
+## Upgrading an existing 1.0.2 installation
 
 1. Back up the existing files and database.
-2. Download and extract the 1.0.2 package locally.
+2. Download and extract the 1.0.3 package locally.
 3. Upload the contents over the existing project and allow DirectAdmin to replace matching application files.
 4. Keep your existing `.env` file and `storage/installed.lock` file.
 5. Do not run `install.php` again and do not re-import `database/schema.sql`.

@@ -1,5 +1,14 @@
 # Veelox Digital changelog
 
+## Version 1.0.3 — Mobile Header Alignment Hotfix
+
+- Removed the earlier compact-navigation stylesheet that conflicted with the mobile drawer.
+- Anchored the complete Veelox brand independently to the left edge.
+- Anchored the hamburger button independently to the right edge.
+- Reserved a protected gap between the brand and button so they cannot overlap.
+- Truncates unusually long agency names before they reach the menu control.
+- No database update is required.
+
 ## Version 1.0.2 — Collapsible Mobile Menu
 
 - Hides the complete navigation and account area on mobile by default.
