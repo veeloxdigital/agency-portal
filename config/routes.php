@@ -10,6 +10,7 @@ use App\Controllers\OrderController;
 use App\Controllers\InvoiceController;
 use App\Controllers\StripeController;
 use App\Controllers\EmailController;
+use App\Controllers\TicketController;
 
 return [
     ['GET', '/', [DashboardController::class, 'index'], ['auth']],
@@ -56,4 +57,16 @@ return [
     ['GET', '/emails/templates/{id}/edit', [EmailController::class, 'edit'], ['auth', 'role:admin']],
     ['POST', '/emails/templates/{id}', [EmailController::class, 'update'], ['auth', 'role:admin', 'csrf']],
     ['POST', '/invoices/{id}/email', [EmailController::class, 'resendInvoice'], ['auth', 'role:admin,staff', 'csrf']],
+    ['GET', '/tickets', [TicketController::class, 'index'], ['auth', 'role:admin,staff']],
+    ['GET', '/tickets/create', [TicketController::class, 'create'], ['auth', 'role:admin,staff']],
+    ['POST', '/tickets', [TicketController::class, 'store'], ['auth', 'role:admin,staff', 'csrf']],
+    ['GET', '/tickets/{id}', [TicketController::class, 'show'], ['auth', 'role:admin,staff']],
+    ['POST', '/tickets/{id}/reply', [TicketController::class, 'reply'], ['auth', 'role:admin,staff', 'csrf']],
+    ['POST', '/tickets/{id}/update', [TicketController::class, 'update'], ['auth', 'role:admin,staff', 'csrf']],
+    ['GET', '/portal/tickets', [TicketController::class, 'portalIndex'], ['auth', 'role:customer']],
+    ['GET', '/portal/tickets/create', [TicketController::class, 'portalCreate'], ['auth', 'role:customer']],
+    ['POST', '/portal/tickets', [TicketController::class, 'portalStore'], ['auth', 'role:customer', 'csrf']],
+    ['GET', '/portal/tickets/{id}', [TicketController::class, 'portalShow'], ['auth', 'role:customer']],
+    ['POST', '/portal/tickets/{id}/reply', [TicketController::class, 'portalReply'], ['auth', 'role:customer', 'csrf']],
+    ['GET', '/ticket-attachments/{id}', [TicketController::class, 'attachment'], ['auth']],
 ];

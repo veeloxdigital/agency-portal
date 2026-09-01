@@ -17,7 +17,7 @@
 <section class="dashboard-grid customer-dashboard">
     <article class="panel recent-services"><div class="panel-heading"><div><span class="eyebrow">Your account</span><h2>Recent services</h2></div></div>
     <?php if ($recentOrders === []): ?><div class="empty-state"><span>◇</span><h3>No services yet</h3><p>Your services will appear here after they are added to your account.</p></div><?php else: ?><div class="portal-order-list"><?php foreach ($recentOrders as $item): ?><div><span class="metric-icon blue">◇</span><span><strong><?= htmlspecialchars((string)$item['description']) ?></strong><small><?= htmlspecialchars((string)$item['order_number']) ?> · <?= $item['billing_type']==='one_off'?'One-off':htmlspecialchars(ucfirst((string)$item['billing_interval'])) ?></small></span><span class="status <?= htmlspecialchars((string)$item['status']) ?>"><?= htmlspecialchars(ucwords(str_replace('_',' ',(string)$item['status']))) ?></span></div><?php endforeach; ?></div><?php endif; ?></article>
-    <article class="panel account-help"><div class="panel-heading"><div><span class="eyebrow">Support</span><h2>Need some help?</h2></div></div><p>Your support area will allow you to contact the Veelox Digital team and follow replies in one place.</p><div class="coming-note">Customer support tickets are coming in version 0.8.0.</div></article>
+    <article class="panel account-help"><div class="panel-heading"><div><span class="eyebrow">Support</span><h2>Need some help?</h2></div></div><p>Contact the Veelox Digital team and follow replies securely in your account.</p><a class="primary-button" href="/portal/tickets/create">Open a support ticket</a></article>
 </section>
 <?php else: ?>
 <section class="metric-grid">

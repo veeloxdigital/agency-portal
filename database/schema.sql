@@ -193,6 +193,20 @@ CREATE TABLE ticket_replies (
     CONSTRAINT fk_ticket_replies_user FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE ticket_attachments (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    ticket_id BIGINT UNSIGNED NOT NULL,
+    reply_id BIGINT UNSIGNED NULL,
+    original_name VARCHAR(255) NOT NULL,
+    stored_name VARCHAR(255) NOT NULL UNIQUE,
+    mime_type VARCHAR(120) NOT NULL,
+    file_size INT UNSIGNED NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ticket_attachments_ticket FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
+    CONSTRAINT fk_ticket_attachments_reply FOREIGN KEY (reply_id) REFERENCES ticket_replies(id) ON DELETE CASCADE,
+    INDEX idx_ticket_attachments_ticket (ticket_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE settings (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     setting_key VARCHAR(120) NOT NULL UNIQUE,
@@ -252,7 +266,7 @@ CREATE TABLE migrations (
 
 INSERT INTO roles (name, slug) VALUES ('Administrator', 'admin'), ('Staff', 'staff'), ('Customer', 'customer');
 INSERT INTO ticket_departments (name, email) VALUES ('General Support', NULL), ('Billing', NULL), ('Web Projects', NULL);
-INSERT INTO migrations (migration) VALUES ('003_packages.sql'), ('004_orders.sql'), ('005_invoices.sql'), ('006_stripe.sql'), ('007_email.sql');
+INSERT INTO migrations (migration) VALUES ('003_packages.sql'), ('004_orders.sql'), ('005_invoices.sql'), ('006_stripe.sql'), ('007_email.sql'), ('008_support.sql');
 
 INSERT INTO settings (setting_key, setting_value, is_secret) VALUES
 ('invoice_prefix', 'INV', 0), ('invoice_due_days', '14', 0);
@@ -263,5 +277,9 @@ INSERT INTO email_templates (template_key,name,subject,body_html) VALUES
 ('order_status','Order status update','Order {{order_number}} is now {{order_status}}','<h1>Order update</h1><p>Your order {{order_number}} is now {{order_status}}.</p>'),
 ('invoice_sent','Invoice issued','Invoice {{invoice_number}} from Veelox Digital','<h1>Invoice {{invoice_number}}</h1><p>Total: {{invoice_total}} · Due: {{invoice_due_date}}</p><p><a href="{{invoice_url}}">View and pay invoice</a></p>'),
 ('payment_received','Payment confirmation','Payment received for {{invoice_number}}','<h1>Thank you</h1><p>We received {{payment_amount}} for {{invoice_number}}. Remaining balance: {{invoice_balance}}.</p>');
+
+INSERT INTO email_templates (template_key,name,subject,body_html) VALUES
+('ticket_created','Support ticket created','Support ticket {{ticket_number}} received','<h1>We have received your ticket</h1><p>Your request {{ticket_number}} — {{ticket_subject}} — is now open.</p><p><a href="{{ticket_url}}">View ticket</a></p>'),
+('ticket_reply','Support ticket reply','New reply on {{ticket_number}}','<h1>New support reply</h1><p>There is a new reply on {{ticket_number}} — {{ticket_subject}}.</p><p><a href="{{ticket_url}}">Read and reply</a></p>');
 
 SET FOREIGN_KEY_CHECKS = 1;

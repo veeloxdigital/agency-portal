@@ -22,6 +22,12 @@ final class MailService
         return $this->sendTemplate($template,['id'=>$r['customer_record_id'],'contact_name'=>$r['contact_name'],'email'=>$r['email'],'email_notifications'=>$r['email_notifications']],['invoice_number'=>$r['invoice_number'],'invoice_total'=>'£'.number_format($r['total_amount']/100,2),'invoice_due_date'=>date('j F Y',strtotime((string)$r['due_date'])),'invoice_url'=>rtrim((string)Env::get('APP_URL',''),'/').'/portal/invoices/'.$r['id'],'payment_amount'=>'£'.number_format(($paymentAmount??0)/100,2),'invoice_balance'=>'£'.number_format($r['balance_due']/100,2)]);
     }
 
+    public function ticket(int $ticketId,string $template): bool
+    {
+        $s=Database::connection()->prepare('SELECT tickets.*,customers.id AS customer_record_id,customers.contact_name,customers.email,customers.email_notifications FROM tickets INNER JOIN customers ON customers.id=tickets.customer_id WHERE tickets.id=:id');$s->execute(['id'=>$ticketId]);$r=$s->fetch();if(!$r)return false;
+        return $this->sendTemplate($template,['id'=>$r['customer_record_id'],'contact_name'=>$r['contact_name'],'email'=>$r['email'],'email_notifications'=>$r['email_notifications']],['ticket_number'=>$r['ticket_number'],'ticket_subject'=>$r['subject'],'ticket_url'=>rtrim((string)Env::get('APP_URL',''),'/').'/portal/tickets/'.$r['id']]);
+    }
+
     public function sendTemplate(string $key,array $customer,array $variables=[]): bool
     {
         if(isset($customer['email_notifications'])&&!$customer['email_notifications'])return false;

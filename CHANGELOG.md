@@ -1,5 +1,18 @@
 # Veelox Digital changelog
 
+## Version 0.8.0 — Support Tickets
+
+- Added separate staff and customer support-ticket areas.
+- Added ticket creation, threaded replies and collision-safe ticket numbers.
+- Added configurable departments, low-to-urgent priorities and ticket assignments.
+- Added open, customer-reply, staff-reply, resolved and closed workflows.
+- Added staff-only private notes that are never exposed in the customer portal.
+- Added protected JPG, PNG, GIF, PDF, TXT and ZIP attachments up to 5 MB.
+- Added ownership checks for customer ticket pages and attachment downloads.
+- Added ticket-created and staff-reply customer email notifications.
+- Added ticket search, status, priority and department filters.
+- Connected the customer dashboard support shortcut and working navigation links.
+
 ## Version 0.7.0 — Transactional Email
 
 - Added self-contained authenticated SMTP delivery with STARTTLS, SSL/TLS and plain SMTP modes.
