@@ -18,6 +18,7 @@ $appName = Env::get('APP_NAME', 'Veelox Digital');
     <link rel="stylesheet" href="/assets/css/packages.css">
     <link rel="stylesheet" href="/assets/css/orders.css">
     <link rel="stylesheet" href="/assets/css/invoices.css">
+    <link rel="stylesheet" href="/assets/css/emails.css">
 </head>
 <body>
 <div class="app-shell">
@@ -36,6 +37,7 @@ $appName = Env::get('APP_NAME', 'Veelox Digital');
             <span class="nav-disabled"><span>✦</span> Support tickets <small>Soon</small></span>
             <?php if (($currentUser['role'] ?? '') === 'admin'): ?>
                 <span class="nav-disabled"><span>↗</span> Reports <small>Soon</small></span>
+                <a class="<?= str_starts_with((string) $path, '/emails') ? 'active' : '' ?>" href="/emails"><span>✉</span> Email centre</a>
                 <span class="nav-disabled"><span>⚙</span> Settings <small>Soon</small></span>
             <?php endif; ?>
         </nav>

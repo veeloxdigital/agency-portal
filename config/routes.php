@@ -9,6 +9,7 @@ use App\Controllers\PackageController;
 use App\Controllers\OrderController;
 use App\Controllers\InvoiceController;
 use App\Controllers\StripeController;
+use App\Controllers\EmailController;
 
 return [
     ['GET', '/', [DashboardController::class, 'index'], ['auth']],
@@ -50,4 +51,9 @@ return [
     ['GET', '/portal/invoices', [InvoiceController::class, 'portalIndex'], ['auth', 'role:customer']],
     ['GET', '/portal/invoices/{id}', [InvoiceController::class, 'portalShow'], ['auth', 'role:customer']],
     ['POST', '/portal/invoices/{id}/stripe-checkout', [StripeController::class, 'checkout'], ['auth', 'role:customer', 'csrf']],
+    ['GET', '/emails', [EmailController::class, 'index'], ['auth', 'role:admin']],
+    ['POST', '/emails/test', [EmailController::class, 'test'], ['auth', 'role:admin', 'csrf']],
+    ['GET', '/emails/templates/{id}/edit', [EmailController::class, 'edit'], ['auth', 'role:admin']],
+    ['POST', '/emails/templates/{id}', [EmailController::class, 'update'], ['auth', 'role:admin', 'csrf']],
+    ['POST', '/invoices/{id}/email', [EmailController::class, 'resendInvoice'], ['auth', 'role:admin,staff', 'csrf']],
 ];

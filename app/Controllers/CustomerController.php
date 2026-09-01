@@ -8,6 +8,7 @@ use App\Core\Database;
 use App\Core\View;
 use PDO;
 use Throwable;
+use App\Services\MailService;
 
 final class CustomerController
 {
@@ -82,8 +83,8 @@ final class CustomerController
         $data['account_number'] = $this->nextAccountNumber($database);
         $statement = $database->prepare(
             'INSERT INTO customers
-             (account_number, type, company_name, contact_name, email, phone, address_line_1, address_line_2, town_city, county, postcode, country_code, status, internal_notes)
-             VALUES (:account_number, :type, :company_name, :contact_name, :email, :phone, :address_line_1, :address_line_2, :town_city, :county, :postcode, :country_code, :status, :internal_notes)'
+             (account_number, type, company_name, contact_name, email, phone, address_line_1, address_line_2, town_city, county, postcode, country_code, status, internal_notes, email_notifications)
+             VALUES (:account_number, :type, :company_name, :contact_name, :email, :phone, :address_line_1, :address_line_2, :town_city, :county, :postcode, :country_code, :status, :internal_notes, :email_notifications)'
         );
         $statement->execute($data);
         $id = (int) $database->lastInsertId();
@@ -141,7 +142,7 @@ final class CustomerController
             'UPDATE customers SET type = :type, company_name = :company_name, contact_name = :contact_name,
              email = :email, phone = :phone, address_line_1 = :address_line_1, address_line_2 = :address_line_2,
              town_city = :town_city, county = :county, postcode = :postcode, country_code = :country_code,
-             status = :status, internal_notes = :internal_notes WHERE id = :id'
+             status = :status, internal_notes = :internal_notes, email_notifications = :email_notifications WHERE id = :id'
         )->execute($data);
         if ($customer['user_id']) {
             $portalStatus = in_array($data['status'], ['inactive', 'archived'], true) ? 'suspended' : 'active';
@@ -182,6 +183,7 @@ final class CustomerController
             $database->prepare('UPDATE customers SET user_id = :user_id WHERE id = :id')->execute(['user_id' => $userId, 'id' => $customer['id']]);
             $database->commit();
             $_SESSION['_temporary_password'] = $temporaryPassword;
+            (new MailService())->sendTemplate('portal_welcome',['id'=>$customer['id'],'contact_name'=>$customer['contact_name'],'email'=>$customer['email'],'email_notifications'=>1],['temporary_password'=>$temporaryPassword]);
             $this->flash('success', 'Customer portal access was created. Copy the temporary password now.');
         } catch (Throwable) {
             if ($database->inTransaction()) $database->rollBack();
@@ -211,6 +213,7 @@ final class CustomerController
         $data['status'] = in_array($_POST['status'] ?? '', ['lead', 'active', 'inactive', 'archived'], true) ? $_POST['status'] : 'active';
         $data['country_code'] = strtoupper(substr(trim((string) ($_POST['country_code'] ?? 'GB')), 0, 2)) ?: 'GB';
         $data['email'] = strtolower((string) $data['email']);
+        $data['email_notifications'] = isset($_POST['email_notifications']) ? 1 : 0;
         return $data;
     }
 
@@ -231,7 +234,7 @@ final class CustomerController
 
     private function emptyCustomer(): array
     {
-        return ['type' => 'business', 'company_name' => '', 'contact_name' => '', 'email' => '', 'phone' => '', 'address_line_1' => '', 'address_line_2' => '', 'town_city' => '', 'county' => 'East Sussex', 'postcode' => '', 'country_code' => 'GB', 'status' => 'active', 'internal_notes' => ''];
+        return ['type' => 'business', 'company_name' => '', 'contact_name' => '', 'email' => '', 'phone' => '', 'address_line_1' => '', 'address_line_2' => '', 'town_city' => '', 'county' => 'East Sussex', 'postcode' => '', 'country_code' => 'GB', 'status' => 'active', 'internal_notes' => '', 'email_notifications' => 1];
     }
 
     private function flash(string $type, string $message): void { $_SESSION['_flash'] = compact('type', 'message'); }

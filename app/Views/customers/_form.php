@@ -32,6 +32,7 @@ $editing = !empty($customer['id']);
     <section class="form-card">
         <div class="form-heading"><span>03</span><div><h2>Internal notes</h2><p>Only administrators and staff can see these notes.</p></div></div>
         <label>Notes<textarea name="internal_notes" rows="6" placeholder="Add useful context about this customer..."><?= htmlspecialchars((string) ($customer['internal_notes'] ?? '')) ?></textarea></label>
+        <label class="toggle-field"><input type="checkbox" name="email_notifications" value="1" <?= !empty($customer['email_notifications']) ? 'checked' : '' ?>><span><strong>Transactional email notifications</strong><small>Send portal, order, invoice and payment emails to this customer.</small></span></label>
     </section>
     <div class="form-actions"><a class="secondary-button" href="<?= $editing ? '/customers/' . (int) $customer['id'] : '/customers' ?>">Cancel</a><button class="primary-button" type="submit"><?= $editing ? 'Save changes' : 'Create customer' ?></button></div>
 </form>

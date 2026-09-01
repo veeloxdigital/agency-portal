@@ -1,6 +1,6 @@
 # Veelox Digital Agency Portal
 
-Current version: **0.6.2**
+Current version: **0.7.0**
 
 The initial foundation for a lightweight customer, order, billing and support platform designed for DirectAdmin hosting with PHP 8.2+ and MySQL/MariaDB.
 
@@ -18,17 +18,19 @@ The initial foundation for a lightweight customer, order, billing and support pl
 - Complete customer order management with package assignment, custom pricing, recurring dates, staff assignment and workflow statuses
 - Complete invoicing with line items, printable customer invoices, outstanding balances and manual bank-transfer payment recording
 - Stripe Checkout card payments with signed webhooks, idempotent reconciliation and customer payment buttons
+- Self-contained authenticated SMTP email delivery, editable templates, notification preferences and delivery logs
 
-## Upgrading an existing 0.6.1 installation
+## Upgrading an existing 0.6.2 installation
 
 1. Back up the existing files and database.
-2. Download and extract the 0.6.2 package locally.
+2. Download and extract the 0.7.0 package locally.
 3. Upload the contents over the existing project and allow DirectAdmin to replace matching application files.
 4. Keep your existing `.env` file and `storage/installed.lock` file.
 5. Do not run `install.php` again and do not re-import `database/schema.sql`.
 6. Sign in as an administrator and visit `https://your-portal-domain.example/update.php`.
-7. No database update is required for this hotfix.
-8. Retry the customer Stripe Checkout button.
+7. Run the database update.
+8. Open `/mail-setup.php` and enter the SMTP details from DirectAdmin.
+9. Open **Email Centre** and send a test email.
 
 ## DirectAdmin installation — no SSH required
 

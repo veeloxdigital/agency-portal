@@ -8,6 +8,7 @@ use App\Core\Auth;
 use App\Core\Database;
 use App\Core\View;
 use App\Services\InvoiceService;
+use App\Services\MailService;
 use PDO;
 use Throwable;
 
@@ -99,6 +100,7 @@ final class OrderController
             $statement->execute($this->persistenceData($data));
             $id = (int) $database->lastInsertId();
             $database->commit();
+            (new MailService())->order($id);
             if ($data['status'] === 'awaiting_payment') {
                 try {
                     $invoiceId = (new InvoiceService())->createFromOrder($id, 'sent');
@@ -148,6 +150,7 @@ final class OrderController
              subtotal_amount=:subtotal_amount, setup_fee_amount=:setup_fee_amount, total_amount=:total_amount,
              currency=:currency, starts_at=:starts_at, renews_at=:renews_at, internal_notes=:internal_notes WHERE id=:id'
         )->execute($this->persistenceData($data));
+        if ($data['status'] !== $order['status']) (new MailService())->order((int) $order['id'], 'order_status');
         if ($data['status'] === 'awaiting_payment') {
             try {
                 $invoiceId = (new InvoiceService())->createFromOrder((int) $order['id'], 'sent');
@@ -172,6 +175,7 @@ final class OrderController
             $completedAt = $status === 'completed' ? date('Y-m-d H:i:s') : null;
             Database::connection()->prepare('UPDATE orders SET status=:status, completed_at=:completed_at WHERE id=:id')
                 ->execute(['status' => $status, 'completed_at' => $completedAt, 'id' => $order['id']]);
+            (new MailService())->order((int) $order['id'], 'order_status');
             if ($status === 'awaiting_payment') {
                 try {
                     $invoiceId = (new InvoiceService())->createFromOrder((int) $order['id'], 'sent');

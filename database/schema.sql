@@ -38,6 +38,7 @@ CREATE TABLE customers (
     country_code CHAR(2) NOT NULL DEFAULT 'GB',
     status ENUM('lead','active','inactive','archived') NOT NULL DEFAULT 'active',
     internal_notes TEXT NULL,
+    email_notifications TINYINT(1) NOT NULL DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_customers_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
@@ -213,6 +214,16 @@ CREATE TABLE email_logs (
     CONSTRAINT fk_email_logs_customer FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE email_templates (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    template_key VARCHAR(120) NOT NULL UNIQUE,
+    name VARCHAR(150) NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    body_html MEDIUMTEXT NOT NULL,
+    enabled TINYINT(1) NOT NULL DEFAULT 1,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE activity_logs (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNSIGNED NULL,
@@ -241,9 +252,16 @@ CREATE TABLE migrations (
 
 INSERT INTO roles (name, slug) VALUES ('Administrator', 'admin'), ('Staff', 'staff'), ('Customer', 'customer');
 INSERT INTO ticket_departments (name, email) VALUES ('General Support', NULL), ('Billing', NULL), ('Web Projects', NULL);
-INSERT INTO migrations (migration) VALUES ('003_packages.sql'), ('004_orders.sql'), ('005_invoices.sql'), ('006_stripe.sql');
+INSERT INTO migrations (migration) VALUES ('003_packages.sql'), ('004_orders.sql'), ('005_invoices.sql'), ('006_stripe.sql'), ('007_email.sql');
 
 INSERT INTO settings (setting_key, setting_value, is_secret) VALUES
 ('invoice_prefix', 'INV', 0), ('invoice_due_days', '14', 0);
+
+INSERT INTO email_templates (template_key,name,subject,body_html) VALUES
+('portal_welcome','Customer portal welcome','Your Veelox Digital portal account','<h1>Welcome, {{customer_name}}</h1><p>Your customer portal is ready.</p><p>Email: {{customer_email}}<br>Temporary password: {{temporary_password}}</p><p><a href="{{portal_url}}">Sign in</a></p>'),
+('order_created','Order confirmation','Order {{order_number}} has been created','<h1>Your order is confirmed</h1><p>Hello {{customer_name}}, order {{order_number}} for {{order_description}} has been created.</p><p>Total: {{order_total}} · Status: {{order_status}}</p>'),
+('order_status','Order status update','Order {{order_number}} is now {{order_status}}','<h1>Order update</h1><p>Your order {{order_number}} is now {{order_status}}.</p>'),
+('invoice_sent','Invoice issued','Invoice {{invoice_number}} from Veelox Digital','<h1>Invoice {{invoice_number}}</h1><p>Total: {{invoice_total}} · Due: {{invoice_due_date}}</p><p><a href="{{invoice_url}}">View and pay invoice</a></p>'),
+('payment_received','Payment confirmation','Payment received for {{invoice_number}}','<h1>Thank you</h1><p>We received {{payment_amount}} for {{invoice_number}}. Remaining balance: {{invoice_balance}}.</p>');
 
 SET FOREIGN_KEY_CHECKS = 1;

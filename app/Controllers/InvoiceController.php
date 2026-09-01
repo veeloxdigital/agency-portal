@@ -10,6 +10,7 @@ use App\Core\Auth;
 use App\Core\View;
 use App\Services\InvoiceService;
 use App\Services\StripeClient;
+use App\Services\MailService;
 use PDO;
 use Throwable;
 
@@ -70,7 +71,7 @@ final class InvoiceController
     {
         $invoice=$this->find((int)$id);$status=(string)($_POST['status']??'');
         if(!in_array($status,['draft','sent','void'],true)||$invoice['amount_paid']>0){$this->flash('error','That invoice status change is not available.');}
-        else{Database::connection()->prepare('UPDATE invoices SET status=:status WHERE id=:id')->execute(['status'=>$status,'id'=>$invoice['id']]);$this->flash('success','Invoice status updated.');}
+        else{Database::connection()->prepare('UPDATE invoices SET status=:status WHERE id=:id')->execute(['status'=>$status,'id'=>$invoice['id']]);if($status==='sent')(new MailService())->invoice((int)$invoice['id']);$this->flash('success','Invoice status updated.');}
         $this->redirect('/invoices/'.$invoice['id']);
     }
 

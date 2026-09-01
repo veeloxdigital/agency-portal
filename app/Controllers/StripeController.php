@@ -8,9 +8,11 @@ use App\Core\Auth;
 use App\Core\Database;
 use App\Services\StripeClient;
 use Throwable;
+use App\Services\MailService;
 
 final class StripeController
 {
+    private ?array $emailNotification = null;
     public function checkout(string $id): never
     {
         $invoice=$this->customerInvoice((int)$id);
@@ -38,6 +40,7 @@ final class StripeController
             if(in_array($type,['checkout.session.completed','checkout.session.async_payment_succeeded'],true)&&($object['payment_status']??'paid')==='paid')$this->completePayment($db,$sessionId,(string)($object['payment_intent']??$sessionId));
             if(in_array($type,['checkout.session.async_payment_failed','checkout.session.expired'],true))$db->prepare("UPDATE payments SET status='failed' WHERE provider='stripe' AND provider_payment_id=:id AND status='pending'")->execute(['id'=>$sessionId]);
             $db->commit();
+            if($this->emailNotification)(new MailService())->invoice($this->emailNotification['invoice_id'],'payment_received',$this->emailNotification['amount']);
         }catch(Throwable $exception){if($db->inTransaction())$db->rollBack();throw $exception;}
     }
 
@@ -48,6 +51,7 @@ final class StripeController
         $db->prepare("UPDATE payments SET status='succeeded',provider_payment_id=:intent,paid_at=NOW() WHERE id=:id")->execute(['intent'=>$paymentIntent,'id'=>$payment['id']]);
         $db->prepare('UPDATE invoices SET amount_paid=:paid,balance_due=:balance,status=:status,paid_at=:paid_at WHERE id=:id')->execute(['paid'=>$paid,'balance'=>$balance,'status'=>$status,'paid_at'=>$balance===0?date('Y-m-d H:i:s'):null,'id'=>$payment['invoice_id']]);
         if($balance===0&&$payment['order_id'])$db->prepare("UPDATE orders SET status='paid' WHERE id=:id AND status='awaiting_payment'")->execute(['id'=>$payment['order_id']]);
+        $this->emailNotification=['invoice_id'=>(int)$payment['invoice_id'],'amount'=>$amount];
     }
 
     private function customerInvoice(int $id): array{$s=Database::connection()->prepare('SELECT invoices.*,customers.email FROM invoices INNER JOIN customers ON customers.id=invoices.customer_id WHERE invoices.id=:id AND customers.user_id=:user LIMIT 1');$s->execute(['id'=>$id,'user'=>Auth::user()['id']]);$invoice=$s->fetch();if(!$invoice){http_response_code(404);exit('Invoice not found.');}return $invoice;}

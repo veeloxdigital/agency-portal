@@ -1,5 +1,21 @@
 # Veelox Digital changelog
 
+## Version 0.7.0 — Transactional Email
+
+- Added self-contained authenticated SMTP delivery with STARTTLS, SSL/TLS and plain SMTP modes.
+- Added browser-based SMTP configuration for DirectAdmin hosting without SSH.
+- Added responsive Veelox Digital HTML emails with plain-text alternatives.
+- Added editable portal welcome, order, invoice and payment templates.
+- Added template enable and disable controls and documented template variables.
+- Added automatic portal welcome and temporary-password emails.
+- Added automatic order-created and order-status emails.
+- Added automatic invoice emails when order invoices become outstanding.
+- Added Stripe payment confirmation emails after verified webhook completion.
+- Added manual invoice resend controls.
+- Added test-email delivery.
+- Added queued, sent and failed delivery logs with SMTP error details.
+- Added per-customer transactional email notification preferences.
+
 ## Version 0.6.2 — Stripe Checkout Compatibility Hotfix
 
 - Explicitly disables Stripe Managed Payments for Veelox invoice Checkout Sessions.

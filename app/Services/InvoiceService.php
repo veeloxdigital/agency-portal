@@ -40,6 +40,7 @@ final class InvoiceService
                     ->execute(['invoice'=>$invoiceId,'description'=>'Setup fee','price'=>$order['setup_fee_amount'],'total'=>$order['setup_fee_amount'],'sort'=>$sort]);
             }
             if ($ownsTransaction) $database->commit();
+            if ($status === 'sent') (new MailService())->invoice($invoiceId);
             return $invoiceId;
         } catch (\Throwable $exception) {
             if ($ownsTransaction && $database->inTransaction()) $database->rollBack();
