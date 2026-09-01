@@ -9,6 +9,7 @@ use App\Core\View;
 use PDO;
 use Throwable;
 use App\Services\MailService;
+use App\Services\ActivityService;
 
 final class CustomerController
 {
@@ -88,6 +89,7 @@ final class CustomerController
         );
         $statement->execute($data);
         $id = (int) $database->lastInsertId();
+        ActivityService::log('customer.created','customer',$id,$data['contact_name'].' created');
         $this->flash('success', $data['contact_name'] . ' was added successfully.');
         $this->redirect('/customers/' . $id);
     }
@@ -149,6 +151,7 @@ final class CustomerController
             Database::connection()->prepare('UPDATE users SET name = :name, email = :email, status = :status WHERE id = :id')
                 ->execute(['name' => $data['contact_name'], 'email' => $data['email'], 'status' => $portalStatus, 'id' => $customer['user_id']]);
         }
+        ActivityService::log('customer.updated','customer',(int)$id,$data['contact_name'].' updated');
         $this->flash('success', 'Customer details were updated.');
         $this->redirect('/customers/' . $customer['id']);
     }
@@ -160,6 +163,7 @@ final class CustomerController
         if ($customer['user_id']) {
             Database::connection()->prepare("UPDATE users SET status = 'suspended' WHERE id = :id")->execute(['id' => $customer['user_id']]);
         }
+        ActivityService::log('customer.archived','customer',(int)$id,'Customer account archived');
         $this->flash('success', 'Customer account was archived.');
         $this->redirect('/customers');
     }

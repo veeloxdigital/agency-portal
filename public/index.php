@@ -28,6 +28,8 @@ Env::load(BASE_PATH . '/.env');
 date_default_timezone_set(Env::get('APP_TIMEZONE', 'Europe/London'));
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
     session_name('veelox_portal');
     session_set_cookie_params([
         'httponly' => true,

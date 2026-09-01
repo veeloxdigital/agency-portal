@@ -8,6 +8,7 @@ use App\Core\Auth;
 use App\Core\Database;
 use App\Core\View;
 use App\Services\MailService;
+use App\Services\ActivityService;
 use PDO;
 use Throwable;
 
@@ -61,7 +62,7 @@ final class TicketController
 
     public function update(string $id): never
     {
-        $ticket=$this->find((int)$id,false);$status=in_array($_POST['status']??'', ['open','customer_reply','staff_reply','resolved','closed'],true)?$_POST['status']:$ticket['status'];$priority=in_array($_POST['priority']??'', ['low','normal','high','urgent'],true)?$_POST['priority']:$ticket['priority'];$assigned=(int)($_POST['assigned_to']??0)?:null;$department=(int)($_POST['department_id']??0)?:$ticket['department_id'];$closed=$status==='closed'?date('Y-m-d H:i:s'):null;Database::connection()->prepare('UPDATE tickets SET status=:status,priority=:priority,assigned_to=:assigned,department_id=:department,closed_at=:closed WHERE id=:id')->execute(['status'=>$status,'priority'=>$priority,'assigned'=>$assigned,'department'=>$department,'closed'=>$closed,'id'=>$ticket['id']]);$this->flash('success','Ticket settings updated.');$this->redirect('/tickets/'.$ticket['id']);
+        $ticket=$this->find((int)$id,false);$status=in_array($_POST['status']??'', ['open','customer_reply','staff_reply','resolved','closed'],true)?$_POST['status']:$ticket['status'];$priority=in_array($_POST['priority']??'', ['low','normal','high','urgent'],true)?$_POST['priority']:$ticket['priority'];$assigned=(int)($_POST['assigned_to']??0)?:null;$department=(int)($_POST['department_id']??0)?:$ticket['department_id'];$closed=$status==='closed'?date('Y-m-d H:i:s'):null;Database::connection()->prepare('UPDATE tickets SET status=:status,priority=:priority,assigned_to=:assigned,department_id=:department,closed_at=:closed WHERE id=:id')->execute(['status'=>$status,'priority'=>$priority,'assigned'=>$assigned,'department'=>$department,'closed'=>$closed,'id'=>$ticket['id']]);ActivityService::log('ticket.updated','ticket',(int)$ticket['id'],$ticket['ticket_number'].' changed to '.$status);$this->flash('success','Ticket settings updated.');$this->redirect('/tickets/'.$ticket['id']);
     }
 
     public function attachment(string $id): never

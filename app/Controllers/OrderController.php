@@ -9,6 +9,7 @@ use App\Core\Database;
 use App\Core\View;
 use App\Services\InvoiceService;
 use App\Services\MailService;
+use App\Services\ActivityService;
 use PDO;
 use Throwable;
 
@@ -175,6 +176,7 @@ final class OrderController
             $completedAt = $status === 'completed' ? date('Y-m-d H:i:s') : null;
             Database::connection()->prepare('UPDATE orders SET status=:status, completed_at=:completed_at WHERE id=:id')
                 ->execute(['status' => $status, 'completed_at' => $completedAt, 'id' => $order['id']]);
+            ActivityService::log('order.status','order',(int)$order['id'],$order['order_number'].' changed to '.$status);
             (new MailService())->order((int) $order['id'], 'order_status');
             if ($status === 'awaiting_payment') {
                 try {

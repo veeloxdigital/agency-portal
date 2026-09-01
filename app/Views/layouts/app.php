@@ -2,10 +2,11 @@
 
 use App\Core\Auth;
 use App\Core\Csrf;
-use App\Core\Env;
+use App\Core\Setting;
 
 $currentUser = Auth::user();
-$appName = Env::get('APP_NAME', 'Veelox Digital');
+$appName = Setting::get('agency_name', 'Veelox Digital');
+$appLogo = Setting::get('agency_logo', '');
 ?>
 <!doctype html>
 <html lang="en">
@@ -22,12 +23,15 @@ $appName = Env::get('APP_NAME', 'Veelox Digital');
     <link rel="stylesheet" href="/assets/css/tickets.css">
     <link rel="stylesheet" href="/assets/css/reports.css">
     <link rel="stylesheet" href="/assets/css/dashboard-reports.css">
+    <link rel="stylesheet" href="/assets/css/settings.css">
+    <link rel="stylesheet" href="/assets/css/branding.css">
+    <link rel="stylesheet" href="/assets/css/account.css">
 </head>
 <body>
 <div class="app-shell">
     <aside class="sidebar">
         <a class="brand" href="/">
-            <span class="brand-mark">V</span>
+            <?php if($appLogo): ?><img class="brand-logo" src="<?= htmlspecialchars((string)$appLogo) ?>" alt=""><?php else: ?><span class="brand-mark">V</span><?php endif; ?>
             <span><strong>Veelox</strong><small>Digital</small></span>
         </a>
         <nav class="nav-list" aria-label="Main navigation">
@@ -41,12 +45,12 @@ $appName = Env::get('APP_NAME', 'Veelox Digital');
             <?php if (($currentUser['role'] ?? '') !== 'customer'): ?><a class="<?= str_starts_with((string)$path,'/reports')?'active':'' ?>" href="/reports"><span>↗</span> Reports</a><?php endif; ?>
             <?php if (($currentUser['role'] ?? '') === 'admin'): ?>
                 <a class="<?= str_starts_with((string) $path, '/emails') ? 'active' : '' ?>" href="/emails"><span>✉</span> Email centre</a>
-                <span class="nav-disabled"><span>⚙</span> Settings <small>Soon</small></span>
+                <a class="<?= str_starts_with((string)$path,'/settings')?'active':'' ?>" href="/settings"><span>⚙</span> Settings</a>
             <?php endif; ?>
         </nav>
         <div class="sidebar-user">
             <div class="avatar"><?= htmlspecialchars(strtoupper(substr((string) ($currentUser['name'] ?? 'V'), 0, 1))) ?></div>
-            <div><strong><?= htmlspecialchars((string) ($currentUser['name'] ?? 'User')) ?></strong><small><?= htmlspecialchars(ucfirst((string) ($currentUser['role'] ?? ''))) ?></small></div>
+            <a class="user-account-link" href="/account/password"><strong><?= htmlspecialchars((string) ($currentUser['name'] ?? 'User')) ?></strong><small><?= htmlspecialchars(ucfirst((string) ($currentUser['role'] ?? ''))) ?> · Password</small></a>
             <form action="/logout" method="post">
                 <input type="hidden" name="_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
                 <button class="logout" type="submit" title="Sign out">↪</button>

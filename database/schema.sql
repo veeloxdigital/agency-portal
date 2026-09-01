@@ -251,6 +251,14 @@ CREATE TABLE activity_logs (
     INDEX idx_activity_entity (entity_type, entity_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE login_attempts (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(190) NOT NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    attempted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_login_attempts_lookup (email, ip_address, attempted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE stripe_webhook_events (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     stripe_event_id VARCHAR(190) NOT NULL UNIQUE,
@@ -266,10 +274,13 @@ CREATE TABLE migrations (
 
 INSERT INTO roles (name, slug) VALUES ('Administrator', 'admin'), ('Staff', 'staff'), ('Customer', 'customer');
 INSERT INTO ticket_departments (name, email) VALUES ('General Support', NULL), ('Billing', NULL), ('Web Projects', NULL);
-INSERT INTO migrations (migration) VALUES ('003_packages.sql'), ('004_orders.sql'), ('005_invoices.sql'), ('006_stripe.sql'), ('007_email.sql'), ('008_support.sql');
+INSERT INTO migrations (migration) VALUES ('003_packages.sql'), ('004_orders.sql'), ('005_invoices.sql'), ('006_stripe.sql'), ('007_email.sql'), ('008_support.sql'), ('010_production.sql');
 
 INSERT INTO settings (setting_key, setting_value, is_secret) VALUES
-('invoice_prefix', 'INV', 0), ('invoice_due_days', '14', 0);
+('invoice_prefix', 'INV', 0), ('invoice_due_days', '14', 0),
+('agency_name','Veelox Digital',0), ('agency_email','',0), ('agency_phone','',0),
+('agency_address','Eastbourne, East Sussex',0), ('agency_logo','',0), ('currency','GBP',0),
+('invoice_footer','Thank you for your business.',0), ('maintenance_mode','0',0);
 
 INSERT INTO email_templates (template_key,name,subject,body_html) VALUES
 ('portal_welcome','Customer portal welcome','Your Veelox Digital portal account','<h1>Welcome, {{customer_name}}</h1><p>Your customer portal is ready.</p><p>Email: {{customer_email}}<br>Temporary password: {{temporary_password}}</p><p><a href="{{portal_url}}">Sign in</a></p>'),

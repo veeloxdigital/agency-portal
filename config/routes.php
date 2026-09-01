@@ -12,6 +12,7 @@ use App\Controllers\StripeController;
 use App\Controllers\EmailController;
 use App\Controllers\TicketController;
 use App\Controllers\ReportController;
+use App\Controllers\SettingsController;
 
 return [
     ['GET', '/', [DashboardController::class, 'index'], ['auth']],
@@ -19,6 +20,8 @@ return [
     ['GET', '/login', [AuthController::class, 'showLogin'], ['guest']],
     ['POST', '/login', [AuthController::class, 'login'], ['guest', 'csrf']],
     ['POST', '/logout', [AuthController::class, 'logout'], ['auth', 'csrf']],
+    ['GET', '/account/password', [AuthController::class, 'passwordForm'], ['auth']],
+    ['POST', '/account/password', [AuthController::class, 'changePassword'], ['auth', 'csrf']],
     ['GET', '/customers', [CustomerController::class, 'index'], ['auth', 'role:admin,staff']],
     ['GET', '/customers/create', [CustomerController::class, 'create'], ['auth', 'role:admin,staff']],
     ['POST', '/customers', [CustomerController::class, 'store'], ['auth', 'role:admin,staff', 'csrf']],
@@ -72,4 +75,12 @@ return [
     ['GET', '/ticket-attachments/{id}', [TicketController::class, 'attachment'], ['auth']],
     ['GET', '/reports', [ReportController::class, 'index'], ['auth', 'role:admin,staff']],
     ['GET', '/reports/export', [ReportController::class, 'export'], ['auth', 'role:admin,staff']],
+    ['GET', '/settings', [SettingsController::class, 'index'], ['auth', 'role:admin']],
+    ['POST', '/settings', [SettingsController::class, 'save'], ['auth', 'role:admin', 'csrf']],
+    ['POST', '/settings/staff', [SettingsController::class, 'createStaff'], ['auth', 'role:admin', 'csrf']],
+    ['POST', '/settings/staff/{id}', [SettingsController::class, 'updateStaff'], ['auth', 'role:admin', 'csrf']],
+    ['POST', '/settings/staff/{id}/reset', [SettingsController::class, 'resetStaff'], ['auth', 'role:admin', 'csrf']],
+    ['POST', '/settings/departments', [SettingsController::class, 'department'], ['auth', 'role:admin', 'csrf']],
+    ['POST', '/settings/departments/{id}', [SettingsController::class, 'updateDepartment'], ['auth', 'role:admin', 'csrf']],
+    ['GET', '/settings/backup', [SettingsController::class, 'backup'], ['auth', 'role:admin']],
 ];

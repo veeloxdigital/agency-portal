@@ -1,8 +1,8 @@
 <?php
 
-use App\Core\Env;
+use App\Core\Setting;
 
-$appName = Env::get('APP_NAME', 'Veelox Digital');
+$appName = Setting::get('agency_name', 'Veelox Digital');
 ?>
 <!doctype html>
 <html lang="en">

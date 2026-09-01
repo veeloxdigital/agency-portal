@@ -1,5 +1,23 @@
 # Veelox Digital changelog
 
+## Version 1.0.0 — Production Release
+
+- Added browser-managed agency identity, contact details, address, invoice defaults and footer.
+- Added secure PNG, JPG and WebP agency-logo uploads and live invoice branding.
+- Added administrator and staff account creation, role changes and suspension.
+- Added one-time temporary staff password generation and administrator resets.
+- Added authenticated password changes for administrators, staff and customers.
+- Prevented self-suspension and removal of the final active administrator.
+- Added support department creation, routing email and active/inactive controls.
+- Added persistent login rate limiting after repeated failed attempts.
+- Added HSTS on HTTPS, anti-framing, MIME-sniffing, referrer and browser-permission headers.
+- Added maintenance mode that preserves administrator access.
+- Added streaming SQL database backups from the browser.
+- Added PHP, database, HTTPS, debug, storage, SMTP and Stripe health checks.
+- Added audit history for authentication, customer, order, invoice, payment, ticket and settings events.
+- Connected agency details and invoice terms to invoices, emails and application branding.
+- Removed the final unfinished navigation placeholder and completed mobile administration layouts.
+
 ## Version 0.9.0 — Revenue Reports
 
 - Added revenue reporting for custom date ranges.
