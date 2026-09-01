@@ -1,5 +1,15 @@
 # Veelox Digital changelog
 
+## Version 1.0.2 — Collapsible Mobile Menu
+
+- Hides the complete navigation and account area on mobile by default.
+- Added a compact accessible menu button beside the Veelox branding.
+- Opens navigation in a full-width overlay only when requested.
+- Added tap-outside and Escape-key closing behaviour.
+- Automatically closes the menu after selecting a destination.
+- Prevents the background page from scrolling while navigation is open.
+- No database update is required.
+
 ## Version 1.0.1 — Compact Mobile Navigation
 
 - Replaced the bulky two-column mobile menu with a compact horizontal navigation strip.

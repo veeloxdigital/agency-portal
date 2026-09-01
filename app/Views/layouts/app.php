@@ -27,6 +27,7 @@ $appLogo = Setting::get('agency_logo', '');
     <link rel="stylesheet" href="/assets/css/branding.css">
     <link rel="stylesheet" href="/assets/css/account.css">
     <link rel="stylesheet" href="/assets/css/mobile-navigation.css">
+    <link rel="stylesheet" href="/assets/css/mobile-drawer.css">
 </head>
 <body>
 <div class="app-shell">
@@ -35,7 +36,9 @@ $appLogo = Setting::get('agency_logo', '');
             <?php if($appLogo): ?><img class="brand-logo" src="<?= htmlspecialchars((string)$appLogo) ?>" alt=""><?php else: ?><span class="brand-mark">V</span><?php endif; ?>
             <span><strong>Veelox</strong><small>Digital</small></span>
         </a>
-        <nav class="nav-list" aria-label="Main navigation">
+        <button class="mobile-menu-toggle" type="button" aria-expanded="false" aria-controls="main-navigation" aria-label="Open navigation"><span></span><span></span><span></span></button>
+        <div class="mobile-menu-backdrop" aria-hidden="true"></div>
+        <nav class="nav-list" id="main-navigation" aria-label="Main navigation">
             <?php $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH); ?>
             <a class="<?= $path === '/' ? 'active' : '' ?>" href="/"><span>⌂</span> Dashboard</a>
             <?php if (($currentUser['role'] ?? '') !== 'customer'): ?><a class="<?= str_starts_with((string) $path, '/customers') ? 'active' : '' ?>" href="/customers"><span>◎</span> Customers</a><?php endif; ?>
@@ -62,5 +65,6 @@ $appLogo = Setting::get('agency_logo', '');
         <?= $content ?>
     </main>
 </div>
+<script src="/assets/js/mobile-navigation.js" defer></script>
 </body>
 </html>
