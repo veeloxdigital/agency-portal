@@ -1,5 +1,14 @@
 # Veelox Digital changelog
 
+## Version 1.0.1 — Compact Mobile Navigation
+
+- Replaced the bulky two-column mobile menu with a compact horizontal navigation strip.
+- Placed agency branding and account controls on one short top row.
+- Added touch-friendly horizontal scrolling for portals with every module enabled.
+- Reduced mobile navigation padding, icon size and dashboard top spacing.
+- Preserved active-page highlighting and access to every permitted module.
+- No database update is required.
+
 ## Version 1.0.0 — Production Release
 
 - Added browser-managed agency identity, contact details, address, invoice defaults and footer.

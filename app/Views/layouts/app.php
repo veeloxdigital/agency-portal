@@ -26,6 +26,7 @@ $appLogo = Setting::get('agency_logo', '');
     <link rel="stylesheet" href="/assets/css/settings.css">
     <link rel="stylesheet" href="/assets/css/branding.css">
     <link rel="stylesheet" href="/assets/css/account.css">
+    <link rel="stylesheet" href="/assets/css/mobile-navigation.css">
 </head>
 <body>
 <div class="app-shell">
