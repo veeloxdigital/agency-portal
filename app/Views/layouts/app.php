@@ -20,6 +20,8 @@ $appName = Env::get('APP_NAME', 'Veelox Digital');
     <link rel="stylesheet" href="/assets/css/invoices.css">
     <link rel="stylesheet" href="/assets/css/emails.css">
     <link rel="stylesheet" href="/assets/css/tickets.css">
+    <link rel="stylesheet" href="/assets/css/reports.css">
+    <link rel="stylesheet" href="/assets/css/dashboard-reports.css">
 </head>
 <body>
 <div class="app-shell">
@@ -36,8 +38,8 @@ $appName = Env::get('APP_NAME', 'Veelox Digital');
             <?php if (($currentUser['role'] ?? '') !== 'customer'): ?><a class="<?= str_starts_with((string) $path, '/orders') ? 'active' : '' ?>" href="/orders"><span>◇</span> Orders</a><?php endif; ?>
             <?php if (($currentUser['role'] ?? '') !== 'customer'): ?><a class="<?= str_starts_with((string) $path, '/invoices') ? 'active' : '' ?>" href="/invoices"><span>▤</span> Invoices</a><?php else: ?><a class="<?= str_starts_with((string) $path, '/portal/invoices') ? 'active' : '' ?>" href="/portal/invoices"><span>▤</span> My invoices</a><?php endif; ?>
             <?php if (($currentUser['role'] ?? '') === 'customer'): ?><a class="<?= str_starts_with((string)$path,'/portal/tickets')?'active':'' ?>" href="/portal/tickets"><span>✦</span> Support</a><?php else: ?><a class="<?= str_starts_with((string)$path,'/tickets')?'active':'' ?>" href="/tickets"><span>✦</span> Support tickets</a><?php endif; ?>
+            <?php if (($currentUser['role'] ?? '') !== 'customer'): ?><a class="<?= str_starts_with((string)$path,'/reports')?'active':'' ?>" href="/reports"><span>↗</span> Reports</a><?php endif; ?>
             <?php if (($currentUser['role'] ?? '') === 'admin'): ?>
-                <span class="nav-disabled"><span>↗</span> Reports <small>Soon</small></span>
                 <a class="<?= str_starts_with((string) $path, '/emails') ? 'active' : '' ?>" href="/emails"><span>✉</span> Email centre</a>
                 <span class="nav-disabled"><span>⚙</span> Settings <small>Soon</small></span>
             <?php endif; ?>

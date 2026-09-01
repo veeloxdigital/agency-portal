@@ -22,9 +22,11 @@ final class DashboardController
             $customerId = (int) ($statement->fetchColumn() ?: 0);
             $metrics = $this->customerMetrics($database, $customerId);
             $recentOrders = $this->customerOrders($database, $customerId);
+            $dashboardRevenue = [];
         } else {
             $metrics = $this->staffMetrics($database);
             $recentOrders = [];
+            $dashboardRevenue = $this->recentRevenue($database);
         }
 
         View::render('dashboard/index', [
@@ -32,6 +34,7 @@ final class DashboardController
             'user' => $user,
             'metrics' => $metrics,
             'recentOrders' => $recentOrders,
+            'dashboardRevenue' => $dashboardRevenue,
         ]);
     }
 
@@ -69,5 +72,10 @@ final class DashboardController
         );
         $statement->execute(['id' => $customerId]);
         return $statement->fetchAll();
+    }
+
+    private function recentRevenue(PDO $database): array
+    {
+        $statement=$database->query("SELECT DATE_FORMAT(paid_at,'%Y-%m') month,COALESCE(SUM(amount-refunded_amount),0) total FROM payments WHERE status IN ('succeeded','partially_refunded') AND paid_at>=DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 5 MONTH),'%Y-%m-01') GROUP BY DATE_FORMAT(paid_at,'%Y-%m')");$found=[];foreach($statement->fetchAll() as $row)$found[$row['month']]=(int)$row['total'];$months=[];for($i=5;$i>=0;$i--){$month=date('Y-m',strtotime('-'.$i.' months'));$months[]=['month'=>$month,'total'=>$found[$month]??0];}return$months;
     }
 }

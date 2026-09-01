@@ -1,5 +1,19 @@
 # Veelox Digital changelog
 
+## Version 0.9.0 — Revenue Reports
+
+- Added revenue reporting for custom date ranges.
+- Added net successful-payment totals with refunds deducted.
+- Added invoiced, outstanding and overdue balance metrics.
+- Added a live six-month revenue chart to the staff dashboard.
+- Added monthly revenue trends and business activity totals.
+- Added Stripe, bank-transfer and manual payment breakdowns.
+- Added one-off, recurring and unassigned revenue breakdowns.
+- Added package performance and highest-value customer tables.
+- Added overdue invoice and upcoming 60-day renewal reports.
+- Added UTF-8 CSV exports for payments, outstanding invoices and renewals.
+- Kept all agency financial reporting inaccessible to customer accounts.
+
 ## Version 0.8.0 — Support Tickets
 
 - Added separate staff and customer support-ticket areas.

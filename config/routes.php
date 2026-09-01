@@ -11,6 +11,7 @@ use App\Controllers\InvoiceController;
 use App\Controllers\StripeController;
 use App\Controllers\EmailController;
 use App\Controllers\TicketController;
+use App\Controllers\ReportController;
 
 return [
     ['GET', '/', [DashboardController::class, 'index'], ['auth']],
@@ -69,4 +70,6 @@ return [
     ['GET', '/portal/tickets/{id}', [TicketController::class, 'portalShow'], ['auth', 'role:customer']],
     ['POST', '/portal/tickets/{id}/reply', [TicketController::class, 'portalReply'], ['auth', 'role:customer', 'csrf']],
     ['GET', '/ticket-attachments/{id}', [TicketController::class, 'attachment'], ['auth']],
+    ['GET', '/reports', [ReportController::class, 'index'], ['auth', 'role:admin,staff']],
+    ['GET', '/reports/export', [ReportController::class, 'export'], ['auth', 'role:admin,staff']],
 ];

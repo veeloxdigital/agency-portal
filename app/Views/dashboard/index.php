@@ -29,8 +29,8 @@
 
 <section class="dashboard-grid">
     <article class="panel">
-        <div class="panel-heading"><div><span class="eyebrow">Revenue</span><h2>Performance overview</h2></div><span class="pill">This month</span></div>
-        <div class="empty-state"><span>↗</span><h3>Revenue reporting is ready</h3><p>Charts will populate as invoices and payments are recorded.</p></div>
+        <div class="panel-heading"><div><span class="eyebrow">Revenue</span><h2>Performance overview</h2></div><span class="pill">Last 6 months</span></div>
+        <?php $dashboardMax=max(array_column($dashboardRevenue,'total')?:[1]); if($dashboardMax===0)$dashboardMax=1; ?><div class="dashboard-revenue-chart"><?php foreach($dashboardRevenue as $point): $height=max(3,round(($point['total']/$dashboardMax)*100)); ?><div><strong>£<?= number_format($point['total']/100,0) ?></strong><span><i style="height:<?= $height ?>%"></i></span><small><?= date('M',strtotime($point['month'].'-01')) ?></small></div><?php endforeach; ?></div><a class="report-link" href="/reports">View full revenue reports →</a>
     </article>
     <article class="panel quick-panel">
         <div class="panel-heading"><div><span class="eyebrow">Shortcuts</span><h2>Quick actions</h2></div></div>
@@ -38,6 +38,7 @@
         <?php if (($user['role'] ?? '') !== 'customer'): ?><a href="/packages/create"><span>▦</span><div><strong>Create a package</strong><small>Add a one-off or recurring service</small></div><b>›</b></a><?php endif; ?>
         <?php if (($user['role'] ?? '') !== 'customer'): ?><a href="/orders/create"><span>◇</span><div><strong>Create an order</strong><small>Assign a service to a customer</small></div><b>›</b></a><?php endif; ?>
         <a href="/invoices/create"><span>▤</span><div><strong>Raise an invoice</strong><small>Create a customer invoice</small></div><b>›</b></a>
+        <a href="/reports"><span>↗</span><div><strong>View reports</strong><small>Revenue, balances and renewals</small></div><b>›</b></a>
     </article>
 </section>
 <?php endif; ?>
